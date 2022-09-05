@@ -21,7 +21,7 @@ dx = x[1]-x[0]
 
 # The time step definition
 dt = 0.1
-T = 3000
+T = 1500
 Nsteps = int(T/dt)
 Nframes = Nsteps//100 #frames to the output
 
@@ -73,7 +73,7 @@ plt.imshow(n[-1],cmap='viridis', vmin=-0.6, vmax=0.4)
 plt.colorbar(label=r'$n(x,y)$', shrink=0.8)
 plt.title('$n_0=%.3f$'% n0)
 plt.savefig('pfc2d-crystal.png')
-plt.show()
+plt.close()
 
 # plot the total free-energy
 F = np.zeros(Nframes)
@@ -85,14 +85,15 @@ for i in range(t.size):
     lapn[:] = ifft2(-k2*n_hat).real
     laplapn[:] = ifft2(k2**2*n_hat).real
     F[i] = np.sum(n[i]*(lapn+0.5*laplapn)+0.5*(1+r)*n[i]**2 + 0.25*n[i]**4)*dx**2
-plt.xlim(0,3000)
+plt.xlim(0,T)
 plt.ylim(0.03,0.034)
 plt.plot(t,F/L**2,'k')
 plt.xlabel('$t$')
 plt.ylabel('$F[n(t)]/L^2$')
-plt.text(2000,0.032,'$n_0=-0.285$')
+plt.text(2*T/3,0.032,'$n_0=-0.285$')
 plt.savefig('pfc2d-freenergy-crystal.png')
-plt.show()
+plt.close()
+
 
 # Export animation in gif
 from matplotlib import animation
@@ -112,5 +113,5 @@ def animate(i):
 
 ani = animation.FuncAnimation(fig, animate, frames= Nframes,
                                interval = 50)
-ani.save('pfc2d-crystal.gif',writer='pillow',fps=10,dpi=100)
+ani.save('pfc2d-crystal.gif',writer='pillow',fps=20,dpi=100)
 
